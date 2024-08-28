@@ -1,0 +1,93 @@
+{% load static %} {% load file_filters %}
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>موقع المنشورات</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <header>
+      <h1>موقع المنشورات</h1>
+      <div class="header-buttons">
+        {% if user.is_authenticated %}
+        <a href="{% url 'pro' %}" class="add-post-btn">إضافة منشور</a>
+        <a href="{% url 'logout' %}" class="login-btn">تسجيل الخروج</a>
+        {% else %}
+        <a href="{% url 'login' %}" class="login-btn">تسجيل الدخول</a>
+        {% endif %}
+      </div>
+    </header>
+
+    {% for msg in messages %}
+    <div
+      class="alert {% if msg.tags == 'error' %}alert-danger{% elif msg.tags == 'success' %}alert-success{% else %}alert-warning{% endif %} alert-dismissible fade show"
+      role="alert">
+      <strong>اهلاً، </strong>{{ msg }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="close"></button>
+    </div>
+    {% endfor %}
+
+    <section class="posts">
+      {% for po in po %}
+      <article class="post">
+        <div class="user-info">
+          <img
+            class="user-avatar"
+            src="{% static 'img/BackGround 2d game.jpg' %}"
+            alt="اسم المستخدم" />
+          <span class="username">{{po.user}}</span>
+        </div>
+        {% if po.file %} {% if po.file.url|is_image %}
+        <img src="{{ po.file.url }}" alt="Image" height="300px" width="400px" />
+        {% elif po.file.url|is_video %}
+        <video width="400" height="300" controls>
+          <source src="{{ po.file.url }}" type="video/mp4" />
+          متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+        {% elif po.file.url|is_audio %}
+        <audio controls>
+          <source src="{{ po.file.url }}" type="audio/mpeg" />
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+        {% else %}
+        <p>نوع الملف غير مدعوم.</p>
+        {% endif %} {% else %}
+        <img
+          src="{% static 'img/BackGround 2d game.jpg' %}"
+          alt="Default Image"
+          height="300px"
+          width="400px" />
+        {% endif %}
+        <h2>{{po.title}}</h2>
+        <p>
+          {{po.dis}}
+          <span class="toggle-btn">▼</span>
+        </p>
+        <ul class="action-buttons" style="display: none">
+          {% if user.is_authenticated %} {% if request.user == po.user %}
+          <li><a href="{% url 'edit' po.id %}" class="edit-btn">تعديل</a></li>
+          <li><a href="{% url 'delete' po.id %}" class="delete-btn">حذف</a></li>
+          {% endif %} {% endif %}
+        </ul>
+        <p>{{po.date}}</p>
+      </article>
+      {% endfor %}
+    </section>
+
+    <script>
+      document.querySelectorAll(".toggle-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          const actionButtons = button.parentElement.nextElementSibling;
+          actionButtons.style.display =
+            actionButtons.style.display === "none" ? "block" : "none";
+        });
+      });
+    </script>
+  </body>
+</html>

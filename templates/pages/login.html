@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <div class="login-container">
+      {% for msg in messages %}
+      <div
+        class="alert {% if msg.tags == 'error' %}alert-danger{% elif msg.tags == 'success' %}alert-success{% else %}alert-warning{% endif %} alert-dismissible fade show"
+        role="alert">
+        <strong>اهلاً،</strong> {{ msg }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="close"></button>
+      </div>
+      {% endfor %}
+
+      <h2 class="login-title">تسجيل دخول</h2>
+
+      <form class="login-form" method="POST">
+        {% csrf_token %}
+        <input
+          class="login-input"
+          type="text"
+          placeholder="اسم المستخدم او الايميل"
+          required
+          name="username" />
+        <input
+          class="login-input"
+          type="password"
+          placeholder="كلمة المرور"
+          required
+          name="pass" />
+        <button class="login-btn" type="submit" name="btnlogin">
+          تسجيل الدخول
+        </button>
+      </form>
+
+      <div class="links">
+        <a class="link" href="{% url 'reset_password' %}">نسيت كلمة المرور؟</a>
+        <a class="link" href="{% url 'userdata' %}">إنشاء حساب</a>
+      </div>
+    </div>
+  </body>
+</html>

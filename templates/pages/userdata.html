@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>انشاء حساب</h1>
+      {% for msg in messages %}
+      <div
+        class="alert {% if msg.tags == 'error' %}alert-danger{% elif msg.tags == 'success' %}alert-success{% else %}alert-warning{% endif %} alert-dismissible fade show"
+        role="alert">
+        <strong>مرحبًا، </strong>{{ msg }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="close"></button>
+      </div>
+      {% endfor %}
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">اسم المستخدم</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            required />
+        </div>
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            name="usermail"
+            required />
+        </div>
+        <div class="form-group">
+          <label for="password">كلمة المرور</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="pass"
+            required />
+        </div>
+        <button type="submit" class="btn btn-primary" name="btncreate">
+          انشاء حساب
+        </button>
+        <a href="{% url 'login' %}" class="btn btn-link">لدي حساب بالفعل!</a>
+      </form>
+    </div>
+  </body>
+</html>
